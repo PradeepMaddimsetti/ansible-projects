@@ -1,0 +1,10 @@
+---
+- name: installing apache web servelet in node
+  hosts: all
+  become: yes
+  tasks:
+  - name: upadting & installing apache2
+    apt:
+      name: apache2
+      state: present
+      update_cache: yes
