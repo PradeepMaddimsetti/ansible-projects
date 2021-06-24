@@ -1,0 +1,12 @@
+---
+ - name: installing lamp on ubuntu
+   hosts: all
+   become: yes
+   tasks:
+        - name: installing apachi2
+          apt:
+              name: apachi2
+              state: present
+              update_cache: yes
+              
+          

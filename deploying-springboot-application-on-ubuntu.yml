@@ -1,0 +1,72 @@
+---
+# Deploying spring boot application to ubuntu
+# Spring Boot Application as a Service (https://www.baeldung.com/spring-boot-app-as-a-service)
+# /* The systemd service setup is very simple as well. Firstly, we create a script named your-app.service using the following example 
+# and put it in /etc/systemd/system directory: */
+
+# /* 
+# [Unit]
+# Description=A Spring Boot application
+# After=syslog.target
+
+# [Service]
+# user=baeldung
+# ExecStart=/path/to/your-app.jar SuccessExitStatus=143 
+
+# [Install] 
+# WantedBy=multi-user.target 
+# */
+# /* List of Linux commands
+# sudo apt update
+# sudo apt install openjdk-11-jdk -y
+# sudo mkdir /usr/share/springpetclinic
+# wget https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+# sudo cp spring-petclinic-2.4.2.jar /usr/share/springpetclinic/
+# sudo adduser springbootuser
+# sudo chown springbootuser:springbootuser /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+# sudo chmod 500 /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+# sudo vi /etc/systemd/system/springpetclinic.service
+# sudo systemctl enable springpetclinic.service
+# sudo systemctl start springpetclinic.service
+# sudo systemctl status springpetclinic.service
+# */
+
+- name: deploying spring boot application as a service on ubuntu
+  hosts: all
+  become: yes
+  tasks:
+    - name: installing java and updating
+      apt: 
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+    - name: creating directory on specified path
+      file:
+        path: /usr/share/springpetclinic
+        state: directory
+    - name: downloding the springpetclinic jar file from hhtp
+      get_url: 
+        url: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+        dest: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+    - name: creating user with name devopt
+      user:
+        name: devopt
+        password: Devopt
+        shell: /bin/bash
+    - name: giving file owner permissions to user devopt
+      file:
+        path: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+        owner: devopt
+        group: devopt
+        mode: '500'
+  # systemd configuration service file is getting from github
+    - name: getting service configuration file from github
+      get_url:
+        url: 
+        dest: /etc/systemd/system/springpetclenic.service
+    - name: enabling services of springpetclinic
+      systemd:
+        name: springpetclinic.service
+        enabled: yes
+        state: started
+---

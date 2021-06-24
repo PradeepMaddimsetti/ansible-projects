@@ -1,0 +1,6 @@
+---
+# installing lamp stack on ubuntu and centos
+- name: installing lamp stack
+  hosts: all
+  become: yes
+- name: 

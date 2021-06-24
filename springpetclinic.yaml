@@ -1,0 +1,14 @@
+---
+- name: installing spring pet cilnic on ubuntu and centos
+  hosts: all
+  become: yes
+  tasks: 
+    - name: installing java
+      package: 
+        name: openjdk-11-jdk
+        state: present
+        update_cache: yes
+    
+      
+
+

@@ -1,0 +1,54 @@
+---
+# using variable format in yaml scripte to 
+- name: deploy springpet clinic application as a service in linux
+  hosts: all
+  become: yes
+  var:
+    app_name: openjdk-11-jdk
+    app_directory_path: /usr/share/springpetclinic
+    app_downloding_url: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+    app_file_path: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+    user: devopt
+    systemd_cofiguration_file_url:
+    systemd_file_path: /etc/systemd/system/springpetclenic.service
+  tasks:
+    - name: installing java on ubuntu
+      apt:
+        name: "{{ app_name }}"
+        state: present
+        update_cache: yes
+    - name: creating directory on specified path
+      file:
+        path: "{{ app_directory_path }}"
+        state: directory
+    - name: downloding the springpetclenic file from url
+      get_url: 
+        url: "{{ app_downloding_url }}"
+        dest: "{{ app_file_path }}"
+    - name: creating user with devopt
+      user:
+        name: "{{ user }}"
+        password: Devopt
+        shell: /bin/bash
+    - name: giving file owner permissions to user devopt
+      file:
+        path: "{{ app_file_path }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '500'
+    - name: downloding service configuration file from github
+      get_url:
+        url:
+        dest: "{{ systemd_file_path }}"
+    - name: enabling services of springpetclenic 
+      systemd:
+        name: springpetclenic.service
+        enabled: yes
+        state: started
+        
+
+
+
+
+
+
