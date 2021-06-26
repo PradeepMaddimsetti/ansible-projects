@@ -1,0 +1,14 @@
+sudo apt update
+sudo apt-get install apache2 -y
+sudo ufw app list
+sudo ufw app info "Apache Full"
+sudo ufw allow in "Apache Full"
+sudo apt install mysql-server
+sudo apt install php libapache2-mod-php php-mysql -y
+sudo systemctl restart apache2
+sudo apt install php-cli
+# to apply the index preference we change the oreder in dir.cog
+# /etc/apache2/mods-enabled/dir.cof
+
+ 
+

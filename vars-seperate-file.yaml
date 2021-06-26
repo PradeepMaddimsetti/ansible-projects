@@ -1,0 +1,10 @@
+---
+vars:
+    pack: openjdk-11-jdk
+    dir: /usr/share/springboot
+    jarfile: /usr/share/springboot/springboot.jar
+    dwnlink: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+    srcpath: /home/ubuntu/springboot.service
+    dstpath: /etc/systemd/system/springboot.service
+
+

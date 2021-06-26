@@ -1,0 +1,8 @@
+172.32.14.255
+pk: pradeep kumar
+pa: openjdk-11-jdk
+di: /usr/share/springboot
+ja: /usr/share/springboot/springboot.jar
+dw: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+sr: /home/ubuntu/springboot.service
+ds: /etc/systemd/system/springboot.service

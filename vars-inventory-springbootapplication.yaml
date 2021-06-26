@@ -1,0 +1,33 @@
+---
+- name: installing spring boot application as a service creating local variables
+  hosts: all
+  become: yes
+  tests:
+  - name: debug the variable global
+    debug:
+      var: pk
+  - name: updating and installing openjdk
+    apt:
+      name: "{{ pa }}"
+      state: present
+      update_cache: yes
+  - name: creating directory
+    file:
+      path: "{{ di }}"
+      state: directory
+  - name: downlode spring pet clinic
+    get_url:
+      url: "{{ dw }}"
+      dest: "{{ ja }}"
+      mode: 0500
+  - name: copy the service file
+    copy:
+      src: "{{ sr }}"
+      dest: "{{ ds }}"
+  - name: start the service file 
+    systemd:
+      name: springboot.service
+      enabled: yes
+      state: started
+      
+  

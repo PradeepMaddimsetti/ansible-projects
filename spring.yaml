@@ -1,0 +1,31 @@
+---
+- name: installing spring boot application as a Service
+  hosts: all
+  become: yes
+  tasks: 
+  - name: updating and installing spring boot application
+    apt:
+      name: openjdk-11-jdk
+      state: present
+      update_cache: yes
+  - name: creating a directory
+    file: 
+      path: /usr/share/springboot
+      state: directory
+  - name: downloding jar file of spring pet clinic
+    get_url:
+      url: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+      dest: /usr/share/springboot/springboot.jar
+      mode: 500
+# we should create service file
+  - name: copying the service file to desired path
+    copy:
+      src: /home/ubuntu/springboot.service
+      dest: /etc/systemd/system/springboot.service
+      mode: 0500
+  - name: enable the service file 
+    systemd:
+      name: springboot
+      enabled: yes
+      state: started
+

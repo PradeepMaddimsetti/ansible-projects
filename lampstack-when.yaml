@@ -1,0 +1,55 @@
+---
+- name: installing lamp stack
+  hosts: all
+  become: yes
+  vars:
+    list_of_packages:
+      - mysql-server
+      - php 
+      - libapache2-mod-php 
+      - php-mysql
+      - php-cli
+    phpfile: /var/www/html/info.php
+  tasks:
+  - name: verfying the os 
+    debug:
+      msg: the package only installs on ununtu and redhat only
+    when: ansible_facts['distribution'] != "Ubuntu" and ansible_facts['distribution'] != "RedHat"     
+  - name: updating and installing apache2
+    apt: 
+      name: apache2
+      state: present
+      update_cache: yes
+    when: ansible_facts["os_name"] == "Ubuntu"
+  - name: updating and installing apache2
+    apt: 
+      name: httpd
+      state: present
+      update_cache: yes
+    when: ansible_facts["os_name"] == "RedHat"
+  - name: ufw firewall enabling and apache restart
+    ufw:
+      rule: allow
+      name: Apache Full
+    notify:
+    - restart the apache server
+  - name: installing mysql and php packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ list_of_packages }}"
+  - name: create a php file  
+    file:
+      path: "{{ phpfile }}"
+      state: touch
+  - name: data ammended to the file php
+    shell: |
+      echo "<?php
+      phpinfo()
+      ?>" >> "{{ phpfile }}"
+
+  handlers:
+    - name: restart the apache server
+      systemd:
+        name: apache2
+        staste: restart
