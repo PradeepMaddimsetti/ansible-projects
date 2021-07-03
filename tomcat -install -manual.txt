@@ -1,0 +1,29 @@
+# tomcat   install manual steps
+sudo apt-get install java
+sudo apt-get install openjdk-11-jdk -y 
+sudo mkdir /opt/tomcat
+cd /opt/tomcat
+wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.48/bin/apache-tomcat-9.0.48.tar.gz
+tar xvzf tomcat-9.0.48.tar.gz
+sudo update-java-alternatives -l 
+nano ~/.bashrc
+export JAVA_HOME=
+export CATALINA_HOME=
+CATALINA_HOME/bin/startup.sh
+sudo systemctl daemon-relode
+sudo systemctl start tomcat
+sudo systemctl status tomcat
+sudo ufw allow 8080
+sudo systemctl enable tomcat
+# configuring webmanagement interface
+sudo nano /opt/tomcat/conf/tomcat-user.xml
+<tomcat-users >
+    <user username="admin" password="password" roles="manager-gui,admin-gui"/>
+</tomcat-users>
+sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
+<Context antiResourceLocking="false" privileged="true" >
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+</Context>
+sudo systemctl restart tomcat

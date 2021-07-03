@@ -9,6 +9,14 @@ sudo systemctl restart apache2
 sudo apt install php-cli
 # to apply the index preference we change the oreder in dir.cog
 # /etc/apache2/mods-enabled/dir.cof
-
- 
-
+# setting up virtual hosts
+#make a directory of u domain
+sudo mkdir /var/www/yourdomain
+sudo chwon -R userfor owner: user for group /var/www/yourdomain
+sudo chmod -R 755 /var/www/yourdomain
+sudo nano /etc/apache2/sites-available/your_domain.conf
+sudo a2ensite your_domain.conf
+sudo a2dissite 000-default.conf
+sudo apache2ctl configtest
+sudo systemctl restart apache2
+sudo nano /var/www/your_domain/info.php

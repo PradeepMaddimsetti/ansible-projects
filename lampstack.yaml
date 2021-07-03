@@ -42,4 +42,3 @@
       systemd:
         name: apache2
         staste: restart
-  -

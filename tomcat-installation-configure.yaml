@@ -1,0 +1,76 @@
+---
+- name: installing and configuring tomcat in ubuntu servers
+  hosts: all
+  become: yes
+  vars:
+    dir: /opt/tomcat
+    java: openjdk-11-jdk
+    untarfile: tomcat-9.0.48.tar.gz
+    usr_conf_file: /opt/tomcat/apache-tomcat-9.0.48/conf/tomcat-user.xml
+    servic_file: /etc/systemd/sysytem/tomcat.service
+    tomcat_downlode_link: https://downloads.apache.org/tomcat/tomcat-9/v9.0.48/bin/apache-tomcat-9.0.48.tar.gz
+  tasts:
+  - name: verfying the os 
+    debug: 
+      msg: the tomcat installed only on ubuntu falvour only
+    when: ansible_facts['os_family'] != "Ubuntu"
+  - name: updating and installing 
+    apt:
+      name: "{{ java }}"
+      state: present
+      update_cache: yes
+  - name: creating user tomcat
+    user:
+      name: tomcat
+      password: pk07
+  - name: creating directory
+    file:
+      path: "{{ dir }}"
+      state: directory
+      owner: tomcat
+      group: tomcat
+  - name: downloding tomcat web app from the link
+    get_url:
+      url: "{{ tomcat_downlode_link }}"
+      dest: "{{ dir }}"
+  - name: untar the tomcat file
+    unarchive:
+      src: "{{ dir }}"/apache-tomcat-9.0.48.tar.gz 
+      dest: "{{ dir }}"
+    notify: 
+      - start of tomcat
+  - name: enable the fire wall
+    ufw:
+      rule: allow
+      port: 8080
+    notify:
+      - restart of tomcat
+  - name: configuring the tomcat-user 
+    shell: |
+      echo "<tomcat-users >
+          <user username="admin" password="pk07" roles="manager-gui,admin-gui"/>
+      </tomcat-users>" >> "{{ usr_conf_file }}"
+  - name: copying the service file
+    copy:
+      src: /home/ubuntu/tomcat.service
+      dest: "{{ servic_file }}"
+  - name: configuring the ip address manager
+    shell: |
+      echo "<Context antiResourceLocking="false" privileged="true" >
+            <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+      </Context>" >> "{{ item }}" 
+    loop:
+      - "/opt/tomcat/webapps/manager/META-INF/context.xml"
+      - "/opt/tomcat/webapps/host-manager/META-INF/context.xml"
+  handlers:
+    - name: restart of tomcat
+      systemd:
+        name: tomcat.service
+        state: restart
+    - name: start of tomcat
+      systemd:
+        name: tomcat.service
+        state: start
+
+
